@@ -63,7 +63,8 @@ def find_big_rect_cnt(mask, size=0.4):
 def create_rect(mask, cnts_norm):
     """
     Сделать из контур(а/ов) один хороший четырехугольник
-    :param cnts: контуры
+    :param mask: маска
+    :param cnts_norm: контуры
     :return: контур
     """
     cnt = None
@@ -117,12 +118,12 @@ def create_perspective(img, cnt_res, ratio=1):
     # теперь, когда у нас есть наш прямоугольник точек, вычислим
     # ширину нашего нового изображения
     (tl, tr, br, bl) = rect
-    widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
-    widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
+    widthA = len_of_vect_2d(br, bl)
+    widthB = len_of_vect_2d(tr, tl)
 
     # ...и высоту
-    heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
-    heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
+    heightA = len_of_vect_2d(tr, br)
+    heightB = len_of_vect_2d(tl, bl)
 
     # возьмите максимальное значение ширины и высоты для достижения наших конечных размеров
     maxWidth = max(int(widthA), int(widthB))
