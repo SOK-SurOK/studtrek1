@@ -3,6 +3,7 @@ import argparse
 import cv2
 from collections import Counter
 from time import time
+from colorama import init, Fore, Back, Style
 
 
 def len_of_vect_2d(a, b):
@@ -190,9 +191,9 @@ def good_resize17(mask):
     return np.where(resized < 150, 0, resized)
 
 
-def find_bad_block_and_to_bit(mask):
+def find_bad_block(mask):  # не работает
     """
-    Выявление плохих блоков и превращение маски в 0 и 1
+    Выявление плохих блоков и их уничтожение
     :param mask: np маска
     :return:
     """
@@ -212,20 +213,47 @@ def find_bad_block_and_to_bit(mask):
     #     for i in range(len(mask)):
     #         mask[i, 16] = 0
 
+
+def mask_to_bit(mask):
+    """
+    Маску в бинарную маску
+    :param mask: маска
+    :return: np-маска из 0 и 1
+    """
     return np.where(mask > 150, 1, 0)
+
+
+def color_print(mask_bit):
+    """
+    Выводит красиво матрицу
+    :param mask_bit:
+    :return:
+    """
+    init()
+    print(Back.GREEN, end="")
+    for i in mask_bit:
+        for j in i:
+            if j == 0:
+                print(Fore.BLACK + '0', end=" ")
+            elif j == 1:
+                print(Fore.RED + '1', end=" ")
+        print()
+    print(Style.RESET_ALL)
 
 
 def main():
     parser = argparse.ArgumentParser(description='labirint')
 
-    # parser.add_argument('-i', action="store", dest="count", default=2, type=int, help='sum')
-    parser.add_argument('img', type=str, help="Path to the query image")
-    args = parser.parse_args()
-    # print(args)
+    # # parser.add_argument('-i', action="store", dest="count", default=2, type=int, help='sum')
+
+    # parser.add_argument('img', type=str, help="Path to the query image", default='p5.jpg')
+    # args = parser.parse_args()
+
+    # img0 = load_image(args.img)
+    img0 = load_image('p5.jpg')
 
     time_before = time()
 
-    img0 = load_image(args.img)
     h_min = np.array((38, 0, 0), np.uint8)
     h_max = np.array((255, 255, 255), np.uint8)
     img1, mask1 = del_background(img0, h_min, h_max)
@@ -234,17 +262,20 @@ def main():
     img2 = create_perspective(img1, cnt1)
     mask2 = create_mask_most_color(img2)
     mask3 = good_resize17(mask2)
-    # print(mask3)
-    print(find_bad_block_and_to_bit(mask3))
+    mask4 = mask_to_bit(mask3)
 
     time_after = time()
+
+    # print(mask4)
+    color_print(mask4)
+
     print(time_after - time_before, ' seconds')
 
-    print('Нажмите любую клавишу, чтобы выйти')
-    cv2.imshow('mask', mask2)
-    cv2.imshow('result', mask3)
-    cv2.waitKey()  # ждем нажатие любой клавиши
-    cv2.destroyAllWindows()
+    # print('Нажмите любую клавишу, чтобы выйти')
+    # cv2.imshow('mask', mask2)
+    # cv2.imshow('result', mask3)
+    # cv2.waitKey()  # ждем нажатие любой клавиши
+    # cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
