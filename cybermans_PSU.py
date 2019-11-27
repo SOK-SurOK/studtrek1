@@ -49,7 +49,7 @@ def find_big_rect_cnt(mask, size=0.4):
     :param size: минимальный процент площади контура от площади маски
     :return: похожие контуры
     """
-    cnts, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # ищем контуры
+    _, cnts, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # ищем контуры
 
     cnts_norm = []
     size_min = len(mask[0]) * len(mask[1]) * size
@@ -144,9 +144,9 @@ def create_perspective(img, cnt_res, ratio=1):
 
 def create_mask_most_color(img):
     """
-    Создание маски по самому распространенному цвету
+    Создание маски по самому распространенному цвету (из левого края)
     :param img: np изображение
-    :return:
+    :return: np-маска
     """
     warp_filter = cv2.bilateralFilter(img, 10, 17, 17)
     warp_hsv = cv2.cvtColor(warp_filter, cv2.COLOR_BGR2HSV)
@@ -250,7 +250,7 @@ def main():
     img0 = load_image(args.img)
     # img0 = load_image('p5.jpg')
 
-    time_before = time()
+    # time_before = time()
 
     img1, mask1 = del_background(img0, np.array((38, 0, 0), np.uint8), np.array((255, 255, 255), np.uint8))
     cnts1 = find_big_rect_cnt(mask1)
@@ -260,12 +260,12 @@ def main():
     mask3 = good_resize17(mask2)
     mask4 = mask_to_bit(mask3)
 
-    time_after = time()
+    # time_after = time()
 
     # print(mask4)
     color_print(mask4)
 
-    print(time_after - time_before, ' seconds')
+    # print(time_after - time_before, ' seconds')
 
     # print('Нажмите любую клавишу, чтобы выйти')
     # cv2.imshow('mask', mask2)
