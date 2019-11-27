@@ -244,19 +244,15 @@ def color_print(mask_bit):
 def main():
     parser = argparse.ArgumentParser(description='labirint')
 
-    # # parser.add_argument('-i', action="store", dest="count", default=2, type=int, help='sum')
+    parser.add_argument('img', type=str, help="Path to the query image")
+    args = parser.parse_args()
 
-    # parser.add_argument('img', type=str, help="Path to the query image", default='p5.jpg')
-    # args = parser.parse_args()
-
-    # img0 = load_image(args.img)
-    img0 = load_image('p5.jpg')
+    img0 = load_image(args.img)
+    # img0 = load_image('p5.jpg')
 
     time_before = time()
 
-    h_min = np.array((38, 0, 0), np.uint8)
-    h_max = np.array((255, 255, 255), np.uint8)
-    img1, mask1 = del_background(img0, h_min, h_max)
+    img1, mask1 = del_background(img0, np.array((38, 0, 0), np.uint8), np.array((255, 255, 255), np.uint8))
     cnts1 = find_big_rect_cnt(mask1)
     cnt1 = create_rect(mask1, cnts1)
     img2 = create_perspective(img1, cnt1)
