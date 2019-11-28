@@ -185,7 +185,7 @@ def good_resize17(mask):
     """
     Сжатие маски к 17 на 17
     :param mask: маска
-    :return:
+    :return: маска 17 на 17
     """
     resized = cv2.resize(mask, (17, 17), interpolation=cv2.INTER_BITS)
     return np.where(resized < 150, 0, resized)
@@ -230,15 +230,15 @@ def color_print(mask_bit):
     :return:
     """
     init()
-    print(Back.GREEN, end="")
     for i in mask_bit:
+        print(Back.GREEN, end="")
         for j in i:
             if j == 0:
                 print(Fore.BLACK + '0', end=" ")
             elif j == 1:
                 print(Fore.RED + '1', end=" ")
-        print()
-    print(Style.RESET_ALL)
+        print(Style.RESET_ALL)
+    print(Style.RESET_ALL, end="")
 
 
 def main():
