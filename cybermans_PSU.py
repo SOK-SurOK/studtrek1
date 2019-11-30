@@ -197,21 +197,14 @@ def find_bad_block(mask):  # не работает
     :param mask: np маска
     :return:
     """
-    bad = []
+    # bad = []
     for i in range(len(mask) - 1):
         for j in range(len(mask) - 1):
             if mask[i, j] == mask[i + 1, j] == mask[i, j + 1] == mask[i + 1, j + 1]:
-                bad.append([i, j])
-    # скорее всего плохие блоки будут на одной линии на оси ординат
-    # print(bad)
-    # if len(bad) > 0:
-    #     j = bad[0][1]
-    #     while j < len(mask) - 1:
-    #         for i in range(len(mask)):
-    #             mask[i, j] = mask[i, j + 1]
-    #         j += 1
-    #     for i in range(len(mask)):
-    #         mask[i, 16] = 0
+                # bad.append([i, j])
+                # print(i, j)
+                if i != 0 and j != 0 and i != 15 and j != 15:
+                    raise Exception('лабиринт на изначальной фотографии невозможно привести к 17 на 17')
 
 
 def mask_to_bit(mask):
@@ -242,13 +235,13 @@ def color_print(mask_bit):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='labirint')
-
-    parser.add_argument('img', type=str, help="Path to the query image")
-    args = parser.parse_args()
-
-    img0 = load_image(args.img)
-    # img0 = load_image('p5.jpg')
+    # parser = argparse.ArgumentParser(description='labirint')
+    #
+    # parser.add_argument('img', type=str, help="Path to the query image")
+    # args = parser.parse_args()
+    #
+    # img0 = load_image(args.img)
+    img0 = load_image('p3.jpg')
 
     # time_before = time()
 
@@ -259,6 +252,7 @@ def main():
     mask2 = create_mask_most_color(img2)
     mask3 = good_resize17(mask2)
     mask4 = mask_to_bit(mask3)
+    find_bad_block(mask4)
 
     # time_after = time()
 
