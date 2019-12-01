@@ -191,22 +191,6 @@ def good_resize17(mask):
     return np.where(resized < 150, 0, resized)
 
 
-# def find_bad_block(mask):  # не работает
-#     """
-#     Выявление плохих блоков и их уничтожение
-#     :param mask: np маска
-#     :return:
-#     """
-#     # bad = []
-#     for i in range(len(mask) - 1):
-#         for j in range(len(mask) - 1):
-#             if mask[i, j] == mask[i + 1, j] == mask[i, j + 1] == mask[i + 1, j + 1]:
-#                 # bad.append([i, j])
-#                 # print(i, j)
-#                 if i != 0 and j != 0 and i != 15 and j != 15:
-#                     raise Exception('лабиринт на изначальной фотографии невозможно привести к 17 на 17')
-
-
 def mask_to_bit(mask):
     """
     Маску в бинарную маску
@@ -234,6 +218,34 @@ def color_print(mask_bit):
     print(Style.RESET_ALL, end="")
 
 
+def check_labirint(mask):
+    """
+    Проверить размерность лабиринта
+    :param mask: маска
+    :return:
+    """
+    kernel = np.ones((3, 3), np.uint8)
+    mask = cv2.dilate(mask, kernel, iterations=1)
+    otn = 0
+    flag = False
+    for i in range(25, 50):
+        for j in range(25, 50):
+            if mask[i, j] == 0:
+                # print(i, j)
+                # cv2.circle(img2, (i, j), 2, (0, 0, 255))
+                # print(mask2.shape[1] / j)
+                # print(mask2.shape[0] / i)
+                otn = abs((mask.shape[1] / j) - (mask.shape[0] / i))
+                flag = True
+            if flag:
+                break
+        if flag:
+            break
+
+    if otn > 1.2:
+        raise Exception('лабиринт на изначальной фотографии невозможно привести к 17 на 17')
+
+
 def main():
     parser = argparse.ArgumentParser(description='labirint')
 
@@ -250,10 +262,7 @@ def main():
     cnt1 = create_rect(mask1, cnts1)
     img2 = create_perspective(img1, cnt1)
     mask2 = create_mask_most_color(img2)
-    otn = round(mask2.shape[0]/mask2.shape[1], 2)
-    # print(otn)
-    if otn > 1 or otn < 0.9:
-        raise Exception('лабиринт на изначальной фотографии невозможно привести к 17 на 17')
+    check_labirint(mask2.copy())
     mask3 = good_resize17(mask2)
     mask4 = mask_to_bit(mask3)
 
