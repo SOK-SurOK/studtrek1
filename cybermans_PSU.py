@@ -161,7 +161,7 @@ def create_mask_most_color(img):
     sh, ss, sv = warp_hsv[:, :, 0], warp_hsv[:, :, 1], warp_hsv[:, :, 2]
     ch, cs, cv = Counter(sh.flat), Counter(ss.flat), Counter(sv.flat)
 
-    # print(ch, cs, cv)
+    # print(ch, '\n\n', cs, '\n\n', cv)
 
     bh, bs, bv = None, None, None
     for i in range(len(ch) - 1):
@@ -223,13 +223,13 @@ def color_print(mask_bit):
 
 
 def main():
-    # parser = argparse.ArgumentParser(description='labirint')
-    #
-    # parser.add_argument('img', type=str, help="Path to the query image")
-    # args = parser.parse_args()
-    #
-    # img0 = load_image(args.img)
-    img0 = load_image('p3.jpg')
+    parser = argparse.ArgumentParser(description='labirint')
+
+    parser.add_argument('img', type=str, help="Path to the query image")
+    args = parser.parse_args()
+
+    img0 = load_image(args.img)
+    # img0 = load_image('p3.jpg')
 
     # time_before = time()
 
