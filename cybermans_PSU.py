@@ -144,17 +144,21 @@ def create_perspective(img, cnt_res, ratio=1):
 
 def create_mask_most_color(img):
     """
-    Создание маски по самому распространенному цвету (из левого края)
+    Создание маски по самому распространенному цвету
     :param img: np изображение
     :return: np-маска
     """
     warp_filter = cv2.bilateralFilter(img, 10, 17, 17)
     warp_hsv = cv2.cvtColor(warp_filter, cv2.COLOR_BGR2HSV)
 
-    s0, s1 = warp_hsv[0], warp_hsv[1]  # перве две строчки
-    s0h, s0s, s0v = s0[:, 0], s0[:, 1], s0[:, 2]
-    s1h, s1s, s1v = s1[:, 0], s1[:, 1], s1[:, 2]
-    sh, ss, sv = np.hstack((s0h, s1h)), np.hstack((s0s, s1s)), np.hstack((s0v, s1v))
+    # print(warp_hsv)
+    # print('-------')
+    # print(warp_hsv[:, :, 0])
+    # s0, s1 = warp_hsv[0], warp_hsv[1]  # перве две строчки
+    # s0h, s0s, s0v = s0[:, 0], s0[:, 1], s0[:, 2]
+    # s1h, s1s, s1v = s1[:, 0], s1[:, 1], s1[:, 2]
+    # sh, ss, sv = np.hstack((s0h, s1h)), np.hstack((s0s, s1s)), np.hstack((s0v, s1v))
+    sh, ss, sv = warp_hsv[:, :, 0], warp_hsv[:, :, 1], warp_hsv[:, :, 2]
     ch, cs, cv = Counter(sh.flat), Counter(ss.flat), Counter(sv.flat)
 
     # print(ch, cs, cv)
@@ -218,57 +222,28 @@ def color_print(mask_bit):
     print(Style.RESET_ALL, end="")
 
 
-def check_labirint(mask):
-    """
-    Проверить размерность лабиринта
-    :param mask: маска
-    :return:
-    """
-    kernel = np.ones((3, 3), np.uint8)
-    mask = cv2.dilate(mask, kernel, iterations=1)
-    otn = 0
-    flag = False
-    for i in range(25, 50):
-        for j in range(25, 50):
-            if mask[i, j] == 0:
-                # print(i, j)
-                # cv2.circle(img2, (i, j), 2, (0, 0, 255))
-                # print(mask2.shape[1] / j)
-                # print(mask2.shape[0] / i)
-                otn = abs((mask.shape[1] / j) - (mask.shape[0] / i))
-                flag = True
-            if flag:
-                break
-        if flag:
-            break
-
-    if otn > 1.2:
-        raise Exception('лабиринт на изначальной фотографии невозможно привести к 17 на 17')
-
-
 def main():
-    parser = argparse.ArgumentParser(description='labirint')
-
-    parser.add_argument('img', type=str, help="Path to the query image")
-    args = parser.parse_args()
-
-    img0 = load_image(args.img)
-    # img0 = load_image('p1.jpg')
+    # parser = argparse.ArgumentParser(description='labirint')
+    #
+    # parser.add_argument('img', type=str, help="Path to the query image")
+    # args = parser.parse_args()
+    #
+    # img0 = load_image(args.img)
+    img0 = load_image('p3.jpg')
 
     # time_before = time()
 
     img1, mask1 = del_background(img0, np.array((38, 0, 0), np.uint8), np.array((255, 255, 255), np.uint8))
-    cnts1 = find_big_rect_cnt(mask1)
+    cnts1 = find_big_rect_cnt(mask1, 0.1)
     cnt1 = create_rect(mask1, cnts1)
     img2 = create_perspective(img1, cnt1)
     mask2 = create_mask_most_color(img2)
-    check_labirint(mask2.copy())
+    # check_labirint(mask2.copy())
     mask3 = good_resize17(mask2)
     mask4 = mask_to_bit(mask3)
 
     # time_after = time()
 
-    # print(mask4)
     color_print(mask4)
 
     # print(time_after - time_before, ' seconds')
