@@ -151,17 +151,8 @@ def create_mask_most_color(img):
     warp_filter = cv2.bilateralFilter(img, 10, 17, 17)
     warp_hsv = cv2.cvtColor(warp_filter, cv2.COLOR_BGR2HSV)
 
-    # print(warp_hsv)
-    # print('-------')
-    # print(warp_hsv[:, :, 0])
-    # s0, s1 = warp_hsv[0], warp_hsv[1]  # перве две строчки
-    # s0h, s0s, s0v = s0[:, 0], s0[:, 1], s0[:, 2]
-    # s1h, s1s, s1v = s1[:, 0], s1[:, 1], s1[:, 2]
-    # sh, ss, sv = np.hstack((s0h, s1h)), np.hstack((s0s, s1s)), np.hstack((s0v, s1v))
     sh, ss, sv = warp_hsv[:, :, 0], warp_hsv[:, :, 1], warp_hsv[:, :, 2]
     ch, cs, cv = Counter(sh.flat), Counter(ss.flat), Counter(sv.flat)
-
-    # print(ch, '\n\n', cs, '\n\n', cv)
 
     bh, bs, bv = None, None, None
     for i in range(len(ch) - 1):
@@ -176,10 +167,6 @@ def create_mask_most_color(img):
         bv = (cv.most_common(i + 1))[-1][0]
         if bv != 0:
             break
-
-    # print(bh)
-    # print(bs)
-    # print(bv)
 
     return cv2.inRange(warp_hsv, np.array((bh - 10, bs - 10, bv - 10), np.uint8),
                        np.array((bh + 10, bs + 10, bv + 10), np.uint8))
@@ -231,28 +218,15 @@ def main():
     img0 = load_image(args.img)
     # img0 = load_image('p3.jpg')
 
-    # time_before = time()
-
     img1, mask1 = del_background(img0, np.array((38, 0, 0), np.uint8), np.array((255, 255, 255), np.uint8))
     cnts1 = find_big_rect_cnt(mask1, 0.1)
     cnt1 = create_rect(mask1, cnts1)
     img2 = create_perspective(img1, cnt1)
     mask2 = create_mask_most_color(img2)
-    # check_labirint(mask2.copy())
     mask3 = good_resize17(mask2)
     mask4 = mask_to_bit(mask3)
 
-    # time_after = time()
-
     color_print(mask4)
-
-    # print(time_after - time_before, ' seconds')
-
-    # print('Нажмите любую клавишу, чтобы выйти')
-    # cv2.imshow('mask', mask2)
-    # cv2.imshow('result', mask3)
-    # cv2.waitKey()  # ждем нажатие любой клавиши
-    # cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
