@@ -1,16 +1,16 @@
 # Первое задание студтрека
 
-Установка pipenv (это виртуальная среда pip) для debian-подобных операционных систем:
+Установка pipenv (это виртуальная среда pip):
 
-    sudo apt install pipenv
-или
-    pip install pipenv
+    sudo apt install pipenv  # для debian-подобных операционных систем
+    pip install pipenv  # или через pip
+    pip3 install pipenv  # или через pip3
 
 Скачиваем архив  
 ...  
 Переходим в директорию проекта  
 ...  
-И устанавливаем зависимости (прописаны в Pipfile):
+И устанавливаем зависимости (прописаны в Pipfile; около часа):
 
     pipenv install
 
