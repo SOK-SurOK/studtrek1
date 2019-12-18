@@ -20,7 +20,7 @@
     python cybermans_PSU.py имя.jpg
     exit  # Выход из pipenv
 
-Или так запускаем (так же из директории проекта):
+Или так запускаем (также из директории проекта):
     
     pipenv run python cybermans_PSU.py имя.jpg
 
