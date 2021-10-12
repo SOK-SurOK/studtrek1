@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-opencv-python = "==3.4.3.18"
+opencv-python = "==4.2.0.32"
 colorama = "*"
 
 [dev-packages]
